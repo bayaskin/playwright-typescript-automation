@@ -8,3 +8,7 @@ coverage/
 !.env.example
 dist/
 .DS_Store
+
+# Allure
+allure-results/
+allure-report/
