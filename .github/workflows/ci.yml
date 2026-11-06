@@ -17,10 +17,10 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version: 22
           cache: npm
@@ -39,10 +39,8 @@ jobs:
 
       - name: Clean previous test artifacts
         run: |
-          rm -rf allure-results
-          rm -rf allure-report
-          rm -rf playwright-report
-          rm -rf test-results
+          rm -rf allure-results allure-report
+          rm -rf playwright-report test-results
 
       - name: Run Playwright tests
         run: npm test
@@ -56,16 +54,16 @@ jobs:
 
       - name: Upload Playwright HTML report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-html-report
           path: playwright-report/
           if-no-files-found: warn
           retention-days: 14
 
-      - name: Upload Allure report
+      - name: Upload Allure HTML report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: allure-html-report
           path: allure-report/
@@ -74,7 +72,7 @@ jobs:
 
       - name: Upload raw Allure results
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v6
         with:
           name: allure-results
           path: allure-results/
@@ -82,10 +80,9 @@ jobs:
           retention-days: 14
 
       - name: Upload Playwright diagnostics
-        if: always()
-        uses: actions/upload-artifact@v4
+        if: always() && hashFiles('test-results/**') != ''
+        uses: actions/upload-artifact@v6
         with:
           name: playwright-test-results
           path: test-results/
-          if-no-files-found: warn
           retention-days: 14
