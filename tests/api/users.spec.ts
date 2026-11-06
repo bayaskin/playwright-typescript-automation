@@ -1,13 +1,16 @@
 import { test, expect } from '../../src/fixtures/test.fixture';
 import { createUser } from '../../src/utils/user.factory';
-import * as allure from 'allure-js-commons';
+import { setTestMetadata } from '../../src/utils/allure';
 
 test.describe('Users API', () => {
   test('should retrieve a user by ID', async ({ userApi }) => {
-    await allure.epic('API Automation');
-    await allure.feature('User Management');
-    await allure.story('Retrieve User');
-    await allure.severity('critical');
+    await setTestMetadata({
+      epic: 'API Automation',
+      feature: 'User Management',
+      story: 'Retrieve User',
+      severity: 'critical',
+      tags: ['api', 'regression'],
+    });
 
     const user = await test.step('Retrieve user with ID 1', async () => {
       return userApi.getUser(1);
@@ -21,19 +24,23 @@ test.describe('Users API', () => {
   });
 
   test('should create a user', async ({ userApi }) => {
-    await allure.epic('API Automation');
-    await allure.feature('User Management');
-    await allure.story('Create User');
-    await allure.severity('normal');
+    await setTestMetadata({
+      epic: 'API Automation',
+      feature: 'User Management',
+      story: 'Create User',
+      severity: 'normal',
+      tags: ['api', 'smoke'],
+    });
 
     const payload = createUser({
       name: 'Bayas Tsyzhipov',
       username: 'bayas',
     });
 
-    const createdUser = await test.step('Submit user creation request', async () => {
-      return userApi.createUser(payload);
-    });
+    const createdUser = await test.step(
+      'Submit user creation request',
+      async () => userApi.createUser(payload),
+    );
 
     await test.step('Validate created user', async () => {
       expect(createdUser.id).toBeGreaterThan(0);
